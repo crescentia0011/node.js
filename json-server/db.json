@@ -1,0 +1,79 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "등록연습01",
+      "author": "user01"
+    },
+    {
+      "id": "2",
+      "title": "등록연습01",
+      "author": "user01"
+    }
+  ],
+  "comments": [
+    {
+      "body": "등록연습2",
+      "postId": 1,
+      "id": "1"
+    },
+    {
+      "id": "4062",
+      "body": "등록연습01",
+      "postId": 1
+    },
+    {
+      "id": "7936",
+      "body": "등록연습01",
+      "postId": 1
+    },
+    {
+      "id": "0212",
+      "body": "등록연습01",
+      "postId": 1
+    },
+    {
+      "id": "9df7",
+      "body": "등록연습01",
+      "postId": 1
+    },
+    {
+      "id": "9c84",
+      "body": "등록연습01",
+      "postId": 1
+    },
+    {
+      "id": "5aa9",
+      "body": "등록연습01",
+      "postId": 1
+    },
+    {
+      "id": "df69",
+      "body": "등록연습01",
+      "postId": 2
+    },
+    {
+      "id": "1769",
+      "body": "등록연습01",
+      "postId": 2
+    },
+    {
+      "id": "b842",
+      "body": "등록연습01",
+      "postId": 2
+    },
+    {
+      "id": "2cd6",
+      "body": "등록연습01",
+      "postId": 2
+    },
+    {
+      "id": "e80e",
+      "body": "등록연습01",
+      "postId": 2
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}

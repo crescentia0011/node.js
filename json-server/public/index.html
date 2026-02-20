@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h3>json-server 실행.</h3>
+    <button id="post">댓글등록</button>
+    <button id="put">댓글수정</button>
+    <script>
+      document.querySelector("#post").addEventListener("click", (e) => {
+        fetch("http://localhost:3000/comments", {
+          method: "post", //get: 전송데이터 header 저장 post: body저장
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            body: "등록연습01",
+            postId: 2,
+          }),
+        })
+          .then((resp) => resp.json())
+          .then((json) => console.log(json));
+      });
+
+      document.querySelector("#put").addEventListener("click", (e) => {
+        fetch("http://localhost:3000/comments/1", {
+          method: "put",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            body: "등록연습2",
+            postId: 1,
+          }),
+        })
+          .then((resp) => resp.json())
+          .then((json) => console.log(json));
+      });
+    </script>
+  </body>
+</html>
