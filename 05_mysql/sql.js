@@ -5,4 +5,5 @@ module.exports = {
   customerUpdate: `update customers set ? where id = ?`,
   customerDelete: `delete from customers where id = ?`,
   customerLogin: `SELECT passwd, email FROM customers WHERE email = ?`,
+  insertCustomer: "insert into customers set ?",
 };

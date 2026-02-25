@@ -9,7 +9,12 @@
   <body>
     <div class="mail-container">
       <h3>📩 메일 발송</h3>
-      <form id="mailForm">
+      <form
+        id="mailForm"
+        action="./api/mail"
+        enctype="multipart/form-data"
+        method="post"
+      >
         <div class="input-group">
           <label for="from">발신자</label>
           <input
@@ -53,6 +58,10 @@
             required
           ></textarea>
         </div>
+        <div class="input-group">
+          <label for="subject">제목</label>
+          <input type="file" name="myfile" id="myfile" />
+        </div>
 
         <button type="submit" class="send-btn">메일 보내기</button>
       </form>
@@ -62,35 +71,42 @@
     const data1 = document.querySelector("#mailForm");
     data1.addEventListener("submit", (e) => {
       e.preventDefault();
-
+      // 필요항목.
       const from = document.querySelector("#from").value;
       const to = document.querySelector("#to").value;
       const subject = document.querySelector("#subject").value;
       const text = document.querySelector("#text").value;
+      // const file = document.querySelector("myfile").value;
       if (!from || !to || !subject || !text) {
         alert("필수 항목 입력.");
         return;
       }
+      const formData = new FormData(); //multipart요청
+      formData.append("from", from);
+      formData.append("to", to);
+      formData.append("subject", subject);
+      formData.append("text", text);
+      formData.append("myfile", e.target[4].files[0]);
+
       fetch("./api/mail", {
         method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from,
-          to,
-          subject,
-          text,
-        }),
+        // headers: { "Content-Type": "application/json" },
+        body: formData,
       })
         .then((resp) => resp.json())
         .then((data) => {
           console.log(data);
-          if (data) {
+          if (data.retCode == "OK") {
             alert("메일을 발송했습니다.");
+            window.location.reload();
           } else {
             alert("메일 발송에 실패했습니다.");
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          alert("서버 오류");
+        });
     });
   </script>
 </html>

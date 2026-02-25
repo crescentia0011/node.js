@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>엑셀 데이터 업로드</title>
+    <link rel="stylesheet" href="style1.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  </head>
+  <body>
+    <div class="upload-container">
+      <h2>정보 엑셀 업로드</h2>
+      <p class="desc">파일을 선택하고 '업로드' 버튼을 누르세요.</p>
+
+      <form id="excelForm">
+        <div class="file-box">
+          <input
+            type="file"
+            name="myFile"
+            id="excelFile"
+            accept=".xlsx, .xls"
+            required
+          />
+          <label for="excelFile" class="btn-upload">파일 선택하기</label>
+          <span id="fileName">선택된 파일 없음</span>
+        </div>
+
+        <button type="submit" id="uploadBtn" class="btn-submit">
+          DB에 저장하기
+        </button>
+      </form>
+
+      <div id="status" class="status-msg"></div>
+    </div>
+
+    <script>
+      // 파일명 표시 스크립트
+      document.querySelector("#excelFile").addEventListener("change", (e) => {
+        const name = e.target.files[0]
+          ? e.target.files[0].name
+          : "선택된 파일 없음";
+        document.querySelector("#fileName").textContent = name;
+      });
+
+      //실행
+      excels = document.querySelector("#excelForm");
+
+      excels.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fileN = document.querySelector("#excelFile");
+        const file = fileN.files[0];
+        const formData = new FormData();
+        formData.append("myFile", file);
+
+        try {
+          await fetch("/api/excel_upload", {
+            method: "POST",
+            body: formData,
+          });
+          document.querySelector("#status").textContent = "성공";
+        } catch (err) {
+          document.querySelector("#status").textContent = "실패";
+          console.log(err);
+        }
+      });
+    </script>
+  </body>
+</html>
