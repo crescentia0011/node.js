@@ -1,0 +1,101 @@
+/* 기본 초기화 및 폰트 설정 */
+body {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    sans-serif;
+  background-color: #f4f7f6;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* 화면 높이 전체를 사용하여 중앙 정렬 */
+}
+
+/* 로그인 박스 컨테이너 */
+.login-container {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px; /* 로그인창은 아담하게 설정 */
+  box-sizing: border-box;
+}
+
+h2 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+/* 입력창 그룹 */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box; /* 패딩이 너비를 넘지 않게 함 */
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* 로그인 버튼 */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 하단 링크 (회원가입 등) */
+.login-footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.login-footer a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시글 등록</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>새 글 작성</h2>
+      <form id="boardForm">
+        <div class="input-group">
+          <label for="title">제목</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="제목을 입력하세요"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="writer_id">작성자 ID (숫자)</label>
+          <input
+            type="number"
+            id="writer_id"
+            name="writer_id"
+            placeholder="회원 번호 입력"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="content">내용</label>
+          <textarea
+            id="content"
+            name="content"
+            rows="10"
+            placeholder="내용을 입력하세요"
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">등록하기</button>
+      </form>
+    </div>
+
+    <script>
+      const formData = document.querySelector("#boardForm");
+      formData.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const data = {
+          title: document.querySelector("#title").value,
+          content: document.querySelector("#content").value,
+          writer_id: document.querySelector("#writer_id").value,
+        };
+        try {
+          const result = await fetch("/api/board/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          if (result.ok) {
+            alert("등록 성공");
+            location.href = "/boardList.html";
+          } else {
+            alert("등록 실패");
+          }
+        } catch (err) {
+          console.error("에러", err);
+          alert("서버 오류");
+        }
+      });
+    </script>
+  </body>
+</html>

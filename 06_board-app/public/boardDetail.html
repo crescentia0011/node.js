@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>게시글 상세 보기</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container detail-container">
+      <div class="header-group">
+        <h2>게시글 상세</h2>
+        <button onclick="location.href = '/boardList.html'" class="btn-list">
+          목록으로
+        </button>
+      </div>
+
+      <div class="detail-content">
+        <div class="info-row">
+          <span class="label">제목:</span>
+          <span id="detail-title" class="value">불러오는 중...</span>
+        </div>
+        <div class="info-row">
+          <span class="label">작성자:</span>
+          <span id="detail-writer" class="value"></span>
+        </div>
+        <div class="info-row">
+          <span class="label">작성일:</span>
+          <span id="detail-date" class="value"></span>
+        </div>
+        <hr />
+        <div class="content-box">
+          <p id="detail-content">내용을 불러오고 있습니다...</p>
+        </div>
+      </div>
+
+      <div class="footer-group">
+        <button class="btn-edit">수정</button>
+        <button class="btn-delete">삭제</button>
+      </div>
+    </div>
+
+    <script>
+      console.log("스크립트 시작");
+      const getD = async () => {
+        const id = localStorage.getItem("page");
+        console.log("겟아이템", id);
+        try {
+          const result = await fetch(`/api/board/${id}`);
+          if (result.ok) {
+            const data = await result.json();
+            console.log("서버데이터:", data);
+
+            const item = data[0];
+            console.log("item data", item);
+            document.querySelector("#detail-title").textContent = item.title;
+
+            document.querySelector("#detail-writer").textContent =
+              item.writer_id ? item.writer_id : "익명";
+
+            if (item.created_at) {
+              document.querySelector("#detail-date").textContent = new Date(
+                item.created_at,
+              ).toLocaleString();
+            }
+
+            document.querySelector("#detail-content").textContent =
+              item.content;
+          }
+        } catch (err) {
+          console.error("상세보기 에러", err);
+        }
+      };
+      getD();
+    </script>
+  </body>
+</html>
