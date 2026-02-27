@@ -60,11 +60,23 @@
               body: JSON.stringify({ loginId, password }),
             });
 
+            // login.html의 fetch 결과 처리 부분
             const result = await response.json();
+            console.log("서버가 준 응답 전체:", result); // 🔍 1. 여기서 token이 어디 있는지 눈으로 확인하세요!
 
             if (response.ok && result.retCode === "OK") {
-              alert("로그인 성공!");
-              location.href = "/boardList.html"; //글 목록으로
+              // 서버 컨트롤러가 { token: user.token } 으로 보내주므로 result.token을 확인
+              const myToken = result.token;
+
+              if (myToken) {
+                localStorage.setItem("token", myToken);
+                console.log("토큰 저장 성공:", myToken);
+                alert("로그인 성공!");
+                location.href = "/boardList.html";
+              } else {
+                console.error("서버 응답에 token 없음.");
+                alert("로그인 정보 저장 실패 (토큰 없음)");
+              }
             } else {
               alert("로그인 실패: " + result.message);
             }

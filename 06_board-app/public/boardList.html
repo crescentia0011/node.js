@@ -10,7 +10,7 @@ t<!doctype html>
     <div class="container list-container">
       <div class="header-group">
         <h2>게시글 목록</h2>
-        <button onclick="location.href = '/board.html'" class="btn-write">
+        <button type="button" id="btn-write" class="btn-write">
           새 글 작성
         </button>
       </div>
@@ -35,56 +35,56 @@ t<!doctype html>
     </div>
 
     <script>
-      // const list = async () => {
-      //   try {
-      //     const boardList = document.querySelector("#boardList");
-      //     const result = await fetch("/api/board/");
-      //     if (result.ok) {
-      //       const data = await result.json();
-      //       boardList.innerHTML = "";
-      //       if (data.length === 0) {
-      //         boardList.innerHTML =
-      //           '<tr><td colspan="4" style="text-align:center;">등록된 게시글이 없습니다.</td></tr>';
-      //         return;
-      //       }
-      //       data.forEach((ele) => {
-      //         const tr = document.createElement("tr");
-      //         const date = new Date(ele.created_at).toLocaleString();
-      //         tr.innerHTML = `<td>${ele.board_id}</td>
-      //               <td class="title-cell"><a href="#">${ele.title}</a></td>
-      //               <td>${ele.writer_id}</td>
-      //               <td>${date}</td>`;
-      //         boardList.appendChild(tr);
-      //       });
-      //     } else {
-      //       alert("목록 불러오기 실패");
-      //     }
-      //   } catch (err) {
-      //     console.error("에러발생", err);
-      //   }
-      // };
-      // list();
+      document.addEventListener("DOMContentLoaded", () => {
+        // querySelector(".btn-write") 대신 #id로 선택
+        const writeBtn = document.querySelector("#btn-write");
 
+        if (writeBtn) {
+          // 기존 이벤트를 확실히 덮어쓰기 위해 onclick을 직접 제어해봅시다
+          writeBtn.onclick = (e) => {
+            const token = localStorage.getItem("token");
+            console.log("현재 토큰 상태:", token); // 확인용 로그
+
+            if (!token || token === "null" || token === "undefined") {
+              alert("로그인이 필요한 서비스입니다.");
+              location.href = "/login.html";
+              return false; // 이동 방지
+            }
+
+            location.href = "/board.html";
+          };
+        }
+      });
       const list = async () => {
         const parent = document.querySelector("#boardList");
 
         try {
-          const result = await fetch("/api/board/");
+          const result = await fetch("/api/board/", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
 
           if (!result.ok) {
             throw new Error("서버 응답 에러");
           }
 
           const data = await result.json();
+          let boardArray = [];
+          if (Array.isArray(data)) {
+            boardArray = data;
+          } else if (data && Array.isArray(data.data)) {
+            boardArray = data.data;
+          }
           parent.innerHTML = "";
 
-          if (data.length === 0) {
+          if (boardArray.length === 0) {
             parent.innerHTML =
               '<tr><td colspan="4" style="text-align:center;">게시글이 없습니다.</td></tr>';
             return;
           }
 
-          for (let board of data) {
+          for (let board of boardArray) {
             const { board_id, title, name, created_at } = board;
 
             const dateText = created_at

@@ -17,7 +17,6 @@ async function createMember(data) {
 async function findId(loginId) {
   const sql = `SELECT * FROM tbl_member WHERE login_id = ?`;
   const [rows] = await pool.query(sql, [loginId]); //필드타입까지 안들고 오려면 []에 넣어라
-  console.log(rows); //배열로 들어오더라
   return rows[0];
 }
 // 모듈 export

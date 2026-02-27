@@ -86,7 +86,10 @@ h2 {
   border-collapse: collapse;
   margin-top: 10px;
 }
-
+td.text-left > a {
+  text-decoration: none;
+  color: inherit;
+}
 .board-table th,
 .board-table td {
   padding: 12px 15px;

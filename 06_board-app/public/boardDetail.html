@@ -14,62 +14,127 @@
         </button>
       </div>
 
-      <div class="detail-content">
-        <div class="info-row">
-          <span class="label">제목:</span>
-          <span id="detail-title" class="value">불러오는 중...</span>
-        </div>
-        <div class="info-row">
-          <span class="label">작성자:</span>
-          <span id="detail-writer" class="value"></span>
-        </div>
-        <div class="info-row">
-          <span class="label">작성일:</span>
-          <span id="detail-date" class="value"></span>
-        </div>
-        <hr />
-        <div class="content-box">
-          <p id="detail-content">내용을 불러오고 있습니다...</p>
-        </div>
-      </div>
+<div class="detail-content">
+  <div class="info-row">
+    <span class="label">제목:</span>
+    <span id="detail-title" class="value">불러오는 중...</span>
+  </div>
+  <div class="info-row">
+    <span class="label">작성자:</span>
+    <span id="detail-writer" class="value"></span>
+  </div>
+  <div class="info-row">
+    <span class="label">작성일:</span>
+    <span id="detail-date" class="value"></span>
+  </div>
 
-      <div class="footer-group">
-        <button class="btn-edit">수정</button>
-        <button class="btn-delete">삭제</button>
-      </div>
-    </div>
+  <div class="session-info" style="margin-top: 10px; font-size: 0.85em; color: #666; background: #f9f9f9; padding: 10px; border-radius: 5px;">
+    <strong>현재 접속 정보:</strong> 
+    <span id="session-name"></span> (<span id="session-user-id"></span>) 
+    | No.<span id="session-member-id"></span>
+  </div>
+
+  <hr />
+  <div class="content-box">
+    <p id="detail-content">내용을 불러오고 있습니다...</p>
+  </div>
+</div>
+
+<div class="footer-group">
+  <button class="btn-edit" id="btn-edit" style="display:none;">수정</button>
+  <button class="btn-delete" id="btn-delete" style="display:none;">삭제</button>
+</div>
 
     <script>
       console.log("스크립트 시작");
       const getD = async () => {
-        const id = localStorage.getItem("page");
-        console.log("겟아이템", id);
-        try {
-          const result = await fetch(`/api/board/${id}`);
-          if (result.ok) {
-            const data = await result.json();
-            console.log("서버데이터:", data);
-
-            const item = data[0];
-            console.log("item data", item);
-            document.querySelector("#detail-title").textContent = item.title;
-
-            document.querySelector("#detail-writer").textContent =
-              item.writer_id ? item.writer_id : "익명";
-
-            if (item.created_at) {
-              document.querySelector("#detail-date").textContent = new Date(
-                item.created_at,
-              ).toLocaleString();
+  const id = localStorage.getItem("page");
+  const token = localStorage.getItem("token");
+  console.log("로컬스토리지에서 가져온 토큰:", token);
+  if (!token) {
+        alert("세션 만료 다시 로그인해주세요.");
+        location.href = "/login.html"; 
+        return; 
+    }
+  try {
+    const result = await fetch(`/api/board/${id}`,{
+              headers: {
+              "Authorization": `Bearer ${token}`
             }
+            }
+    );
+    if (result.ok) {
 
-            document.querySelector("#detail-content").textContent =
-              item.content;
-          }
-        } catch (err) {
-          console.error("상세보기 에러", err);
+      
+      // 1. 게시글 데이터 추출
+      const response = await result.json();
+      console.log("서버데이터:", response);
+      const item = response.data; //얘가 게시글 data 들고있을거임
+      if (!item) {
+        console.error("데이터를 찾을 수 없습니다.");
+        return;
+      }
+
+      // 2. 게시글 화면
+      document.querySelector("#detail-title").textContent = item.title;
+      // 작성자 표시: "김관리 (user22)" 형태 출력할거임
+      document.querySelector("#detail-writer").textContent = `${item.name || '익명'} (${item.login_id || 'ID없음'})`;
+      document.querySelector("#detail-content").textContent = item.content;
+      
+      if (item.created_at) {
+        document.querySelector("#detail-date").textContent = new Date(item.created_at).toLocaleString();
+      }
+
+      // 3. 화면 버튼 제어
+      const currentUser = response.user;
+      
+      if (currentUser && currentUser.loginId) {
+        if(document.querySelector("#session-name")) {
+
+          document.querySelector("#session-member-id").textContent = currentUser.member_id || "-"; 
+          document.querySelector("#session-user-id").textContent = currentUser.loginId; 
+          document.querySelector("#session-name").textContent = currentUser.name;
         }
-      };
+
+        // 4. 본인 글 확인 로직
+
+        if (currentUser.loginId === item.login_id) {
+          const editBtn = document.querySelector(".btn-edit");
+          const delBtn = document.querySelector(".btn-delete");
+          if(editBtn) {
+            editBtn.style.display = "inline-block"
+          };
+          if(delBtn) {
+            delBtn.style.display = "inline-block";
+            delBtn.onclick = async ()=>{
+            if(!confirm("삭제하시겠습니까?")) return;
+
+              const id = localStorage.getItem("page");
+              const token = localStorage.getItem("token");
+            try{
+              const res = await fetch(`/api/board/${id}`,{
+                method:"DELETE",
+                headers:{Authorization:`Bearer ${token}`}
+              });
+              const result = await res.json();
+              if(res.ok){
+                alert("삭제 완료");
+                location.href="/boardList.html"
+              }else{
+                alert("삭제 실패:" + result.message)
+              }
+              }catch(err){
+            console.error(err)
+                }
+            }
+          };
+        }
+      }
+    }
+  } catch (err) {
+    console.error("상세보기 에러", err);
+  }
+};
       getD();
     </script>
   </body>

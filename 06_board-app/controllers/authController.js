@@ -23,13 +23,11 @@ const login = async (req, res) => {
     req.session.user = {
       loginId: user.loginId,
       name: user.name,
+      member_id: user.member_id,
     };
-    console.log("========= 세션 저장 완료 =========");
-    console.log("현재 세션 데이터:", req.session.user);
-    console.log("세션 ID:", req.sessionID);
-    console.log("=================================");
+
     req.session.save(() => {
-      res.json({ retCode: "OK", user: req.session.user });
+      res.json({ retCode: "OK", user: req.session.user, token: user.token });
     });
   } catch (err) {
     console.error("에러:", err.message);
